@@ -9,6 +9,8 @@ from Crypto.Cipher import Blowfish
 from datetime import datetime
 from decimal import Decimal, ROUND_UP
 from django.conf import settings
+from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.db import models
 from django.utils.safestring import mark_safe
@@ -33,11 +35,11 @@ class PaymentBase(models.Model):
     details = models.CharField(_("Details"), max_length=255, blank=True, null=True)
     reason_code = models.CharField(_('Reason Code'),  max_length=255, blank=True, null=True)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         if not self.pk:
             self.time_stamp = datetime.now()
 
-        super(PaymentBase, self).save(force_insert=force_insert, force_update=force_update)
+        super(PaymentBase, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -235,6 +237,10 @@ class Purchase(models.Model):
     its state.
     """
     site = models.ForeignKey(Site, verbose_name=_('Site'))
+    client_pk = models.PositiveIntegerField(_(u'Client ID'), null=True)
+    client_ct = models.ForeignKey(ContentType, verbose_name=_(u'Client type'),
+                                  null=True)
+    client = GenericForeignKey('client_ct', 'client_pk')
     orderno = models.CharField(_("Order Number"), max_length=20)
     first_name = models.CharField(_("First name"), max_length=30)
     last_name = models.CharField(_("Last name"), max_length=30)

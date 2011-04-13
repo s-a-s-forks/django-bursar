@@ -2,7 +2,12 @@ from django import forms
 from django.db import models
 from django.db.models.fields import DecimalField
 from widgets import CurrencyWidget
-
+try:
+    from south.modelsinspector import add_introspection_rules
+except ImportError:
+    SOUTH = False
+else:
+    SOUTH = True
 
 class CurrencyField(DecimalField):
 
@@ -19,7 +24,6 @@ class CurrencyField(DecimalField):
         }
         defaults.update(kwargs)
         return super(CurrencyField, self).formfield(**defaults)
-
 
 class RoundedDecimalField(forms.Field):
     def clean(self, value):
@@ -51,3 +55,14 @@ class PositiveRoundedDecimalField(RoundedDecimalField):
 
         return value
 
+if SOUTH:
+    add_introspection_rules([((CurrencyField,),
+                              [],
+                              {'display_decimal': ['places', {'default': 2}]}
+                              )],
+                             ['^bursar\.fields\.CurrencyField'])
+    add_introspection_rules([],
+                            ['^bursar\.fields\.RoundedDecimalField',
+                             '^bursar\.fields\.PositiveRoundedDecimalField'])
+
+             
