@@ -385,7 +385,7 @@ class Purchase(models.Model):
 class LineItem(models.Model):
     """A single line item in a purchase.  This is optional, only needed for certain
     gateways such as Google or PayPal."""
-    sku = models.CharField(_("SKU"), max_length=255, default="1")
+    sku = models.CharField(_("SKU"), max_length=7, default="1")
     purchase = models.ForeignKey(Purchase, 
         verbose_name=_("Purchase"), related_name="lineitems")
     ordering = models.PositiveIntegerField(_('Ordering'),
