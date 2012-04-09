@@ -1,6 +1,8 @@
-from bursar.fields import CurrencyField
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from django.db import models
+
+from bursar.fields import CurrencyField
 from bursar.models import Authorization, CreditCardDetail, Payment, PaymentFailure, \
                         PaymentNote, PaymentPending, Purchase, LineItem, \
                         RecurringLineItem, Payment
